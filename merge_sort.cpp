@@ -1,69 +1,77 @@
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-void arrayInput(int arr[], int n)
+void merge(int arr[], int temp[], int low, int mid, int high)
 {
-    for (int i = 0; i < n; i++)
-        cin >> arr[i];
-}
-
-void print(int arr[], int n)
-{
-    for (int i = 0; i < n; i++)
-        cout << arr[i] << " ";
-    cout << endl;
-}
-
-void marge(int arr[], int l, int mid, int r)
-{
-
-    int te[r - l + 1];
-    int i = l;
-    int k = 0;
+    int i = low;
+    int k = low;
     int j = mid + 1;
-    while (i <= mid and j <= r)
+
+    while ((i <= mid) && (j <= high))
     {
-        if (arr[i] < arr[j])
+        if (arr[i] <= arr[j])
         {
-            te[k++] = arr[i++];
-            continue;
+            temp[k++] = arr[i++];
         }
         else
-            te[k++] = arr[j++];
+        {
+            temp[k++] = arr[j++];
+        }
     }
     while (i <= mid)
-        te[k++] = arr[i++];
-
-    while (j <= r)
-        te[k++] = arr[j++];
-    for (int i = 0; i < k; i++)
     {
-        arr[l + i] = te[i];
+        temp[k++] = arr[i++];
+    }
+    while (j <= high)
+    {
+        temp[k++] = arr[j++];
+    }
+    for (i = low; i <= high; i++)
+    {
+        arr[i] = temp[i];
     }
 }
 
-void margeSort(int arr[], int l, int r)
+void marge_sort(int arr[], int temp[], int low, int high)
 {
-    if (l >= r)
-        return;
-    int mid = (l + r) / 2;
-
-    margeSort(arr, l, mid);
-    margeSort(arr, mid + 1, r);
-    marge(arr, l, mid, r);
+    if (low != high)
+    {
+        int mid;
+        mid = (low + high) / 2;
+        marge_sort(arr, temp, low, mid);
+        marge_sort(arr, temp, mid + 1, high);
+        merge(arr, temp, low, mid, high);
+    }
 }
 
 int main()
 {
-    cout << "Enter Size of Array: ";
-    int n;
+
+    int size, n;
+
+    cout << "Enter the size of array : ";
     cin >> n;
-    int arr[n];
-    cout << "Enter Elements of the array: " << endl;
-    arrayInput(arr, n);
-    margeSort(arr, 0, n - 1);
-    cout << "Sorted Array" << endl;
-    print(arr, n);
+    int arr[n], temp[n];
+
+    cout << "Enter the array element : " << endl;
+    for (int i = 0; i < n; i++)
+    {
+        cin >> arr[i];
+    }
+    cout << endl
+         << "Array elements are : ";
+    for (int i = 0; i < n; i++)
+    {
+        cout << "\t" << arr[i];
+    }
+
+    marge_sort(arr, temp, 0, n - 1);
+    cout << endl
+         << "Merge sort elements are : ";
+    for (int i = 0; i < n; i++)
+    {
+        cout << "\t" << arr[i];
+    }
     return 0;
 }
