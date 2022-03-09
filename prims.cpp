@@ -1,67 +1,88 @@
 #include <bits/stdc++.h>
+
 using namespace std;
+
+struct Edge
+{
+    int to, weight;
+};
+
+vector<Edge> G[100];
+
+void PrimBro(int n, int e)
+{
+
+    vector<int> vis(n + 1, 0);
+    set<pair<int, int>> ms;
+
+    ms.insert({0, 1});
+    int cost = 0, connected_edge = 0;
+
+    while (!ms.empty())
+    {
+        auto top = ms.begin();
+        ms.erase(ms.begin());
+        int u = top->second;
+
+        if (vis[u] == 1)
+            continue;
+
+        cost += top->first;
+        vis[u] = 1;
+
+        connected_edge++;
+        if (connected_edge == n)
+            break;
+
+        for (Edge i : G[u])
+        {
+            if (!vis[i.to])
+            {
+                ms.insert({i.weight, i.to});
+            }
+        }
+    }
+
+    cout << cost << endl;
+}
 
 int main()
 {
+    int n, e;
+    cin >> n >> e;
 
-    int N, M;
-    cin >> N >> M;
-
-    vector<pair<int, int>> g[N];
-    int a, b, w;
-
-    for (int i = 0; i < M; i++)
+    for (int i = 0; i < e; ++i)
     {
-        cin >> a >> b >> w;
-        g[a].push_back({b, w});
-        g[b].push_back({a, w});
-    }
-    int parent[N];
-
-    int key[N];
-
-    bool minSet[N];
-
-    for (int i = 0; i < N; i++)
-    {
-        key[i] = INT_MAX;
-        minSet[i] = false;
-        parent[i] = -1;
+        int u, v, w;
+        cin >> u >> v >> w;
+        G[u].push_back({v, w});
+        G[v].push_back({u, w});
     }
 
-    key[0] = 0;
-    parent[0] = -1;
+    cout << "minimum cost is : ";
+    PrimBro(n, e);
 
-    for (int i = 0; i < N - 1; i++)
-    {
-        int mini = INT_MAX, u;
-
-        for (int v = 0; v < N; v++)
-        {
-            if (minSet[v] == false && key[v] < mini)
-            {
-                mini = key[v];
-                u = v;
-            }
-        }
-        minSet[u] = true;
-
-        for (auto it : g[u])
-        {
-
-            int v = it.first;
-            int w = it.second;
-
-            if (!minSet[v] && w < key[v])
-            {
-                key[v] = w;
-                parent[v] = u;
-            }
-        }
-    }
-
-    for (int i = 1; i < N; i++)
-    {
-        cout << parent[i] << " -- " << i << endl;
-    }
+    return 0;
 }
+
+
+// input
+
+
+// 9 14
+// 1 2 4
+// 1 3 8
+// 2 3 11
+// 2 5 8
+// 5 4 2
+// 4 3 7
+// 3 7 1
+// 4 7 6
+// 5 8 4
+// 7 8 2
+// 6 8 14
+// 6 9 9
+// 8 9 10
+// 5 6 7
+
+//ans =37
